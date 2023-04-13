@@ -1,0 +1,70 @@
+/* Modal */
+.ReactModalPortal > div{
+    opacity: 0;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    transition: opacity .2s ease-in-out;
+    z-index: 999;
+}
+
+.modal-fondo {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+}
+
+.ReactModalPortal .ReactModal__Overlay--after-open {
+    opacity: 1;
+}
+
+.ReactModalPortal .ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.modal {
+    background: white;
+    border-radius: 5px;
+    color: rgb(51, 51, 51);
+    display: inline;
+    max-height: 500px;
+    max-width: 500px;
+    outline: none;
+    padding: 10px;
+}
+
+/*FABS*/
+.btn__style{
+    font-size: 21px;
+    padding: 12px;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+}
+
+.btn__danger{
+    border-radius: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 2px transparent;
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background-color: red;
+}
+
+.btn__danger:hover{
+    border: solid 2px black;
+}
