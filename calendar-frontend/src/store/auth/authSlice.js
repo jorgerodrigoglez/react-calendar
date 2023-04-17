@@ -18,12 +18,6 @@ export const authSlice = createSlice({
         state.user = payload;
         state.errorMessage = undefined;
       },
-      // se puede prescindir si se realia el login directamente
-      /*onRegister: ( state, { payload } ) => {
-        state.status = 'not-authenticated';
-        state.user = {};
-        state.errorMessage = undefined;
-      },*/
       onLogout: ( state, { payload } ) => {
         state.status = 'not-authenticated';
         state.user = {};

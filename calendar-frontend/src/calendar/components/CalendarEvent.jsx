@@ -1,12 +1,13 @@
 
 export const CalendarEvent = ({ event }) => {
 
-    const { title, user } = event;
+    //console.log(event);
+    const { title, name } = event;
 
     return (
         <>
             <strong>{title}</strong>
-            <strong> - {user.name}</strong>
+            <p> / {name}</p>
         </>
     )
 }

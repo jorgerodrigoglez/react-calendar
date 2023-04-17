@@ -1,7 +1,7 @@
 import { addHours } from "date-fns";
 import { useCalendarStore, useUiStore } from "../../hooks"
 
-export const FabAddNew = () => {
+export const FabAddNew = ({ setFormatText, setColorDisabled }) => {
 
     //* Hooks
     const { openDateModal } = useUiStore();
@@ -13,14 +13,11 @@ export const FabAddNew = () => {
             notes: '',
             start: new Date(),
             end: addHours( new Date(), 2 ),
-        
-            bgColor: '#fafafa',
-            user: {
-                _id: 'qwqee',
-                name: 'JRG'
-            }
         });
-
+        // cambia los estilos al abrir el modal
+        setFormatText(false);
+        setColorDisabled(false);
+        // abre el modal
         openDateModal();
 
     }

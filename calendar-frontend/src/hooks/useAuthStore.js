@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 //import Swal from 'sweetalert2';
 import { calendarApi } from "../api";
-import { onChecking, onClearErrorMessage, onLogin, onLogout } from "../store";
+import { onChecking, onClearErrorMessage, onClearLogout, onLogin, onLogout } from "../store";
 
 
 export const useAuthStore = () => {
@@ -75,6 +75,7 @@ export const useAuthStore = () => {
     // hacer logout
     const startLogout = () => {
         localStorage.clear();
+        dispatch( onClearLogout());
         dispatch( onLogout() );
     }
 

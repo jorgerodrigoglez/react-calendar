@@ -1,5 +1,5 @@
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
 // yarn add react-big-calendar - https://www.npmjs.com/package/react-big-calendar
 // yarn add date-fns
 import { Calendar } from 'react-big-calendar';
@@ -11,33 +11,43 @@ import { Navbar, CalendarEvent, CalendarModal, FabAddNew , FabDelete } from '../
 import { localizer, getMessagesES } from '../../helpers';
 import { useCalendarStore, useUiStore } from '../../hooks';
 
+
 // Ahora en calendarSlice
 /*const events = [{
-  title: 'Vacaciones de invierno',
-  note: 'Hacer la reserva de hotel y comprar ropa',
+  title: '',
+  note: '',
   start: new Date(),
   end: addHours( new Date(), 2 ),
 
   bgColor: '#fafafa',
-  user: {
-    _id: 'qwqee',
-    name: 'JRG'
+  name: ''
   }
 }]*/
 
 export const CalendarPage = () => {
+  //* redux
+  const { user } = useSelector( state => state.auth );
   //* Hooks
   const { openDateModal } = useUiStore();
-  const { events, setActiveEvent } = useCalendarStore();
+  const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
 
   // recoger el valor de la ultima vista del calendario en local storage
-  const [lastView, setLastView] = useState(localStorage.getItem('last-view') || 'week' );
+  const [lastView, setLastView] = useState(localStorage.getItem('last-view') || 'month' );
+  // format texts & color
+  const [formatText, setFormatText] = useState(false);
+  const [colorDisabled, setColorDisabled] = useState(false);
 
   const eventStyleGetter = ( event, start, end, isSelected ) => {
     //console.log({event, start, end, isSelected});
+    // asignar colores a usuario
+    //console.log(event);
+    //console.log(user);
+    
+    // colorear los eventes del calendario dependiendo del usuario activo
+    const activeUseColor = ( user.uid === event.user_id );
 
     const style = {
-      backgroundColor: '#347CF7',
+      backgroundColor: activeUseColor ? '#347CF7' : '#6ab2f0',
       borderRadius: '0px',
       opacity: 0.8,
       color: 'white'
@@ -52,17 +62,33 @@ export const CalendarPage = () => {
   const onDoubleClick = ( event ) => {
     //console.log({ doubleClick: event })
     openDateModal();
+    setFormatText(true);
+    // una vez activo el evento
+    if( user.uid !== event.user_id ){
+      setColorDisabled(true);
+    }
   }
 
   const onSelect = ( event ) => {
-    console.log({ select: event })
+    //console.log({ select: event })
     setActiveEvent( event );
+    // una vez activo el evento
+    if( user.uid !== event.user_id ){
+      return setColorDisabled(true);
+    }
+    setColorDisabled(false);
   }
 
   const onViewChanged = ( event ) => {
     //console.log({ viewChange: event })
     localStorage.setItem('last-view', event );
   }
+
+  // useCalendarStore - backend - lista los eventos
+  useEffect(() => {
+    startLoadingEvents();
+  }, [])
+  
 
 
   return (
@@ -87,10 +113,10 @@ export const CalendarPage = () => {
         onView={ onViewChanged }
       />
 
-      <CalendarModal/>
+      <CalendarModal formatText={formatText} colorDisabled={colorDisabled}/>
 
-      <FabAddNew/>
-      <FabDelete/>
+      <FabAddNew setFormatText={setFormatText} setColorDisabled={setColorDisabled}/>
+      <FabDelete colorDisabled={colorDisabled}/>
 
     </>
   )

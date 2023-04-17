@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 import { useCalendarStore } from "../../hooks"
 
-export const FabDelete = () => {
+export const FabDelete = ({ colorDisabled }) => {
+ 
     // redux
     const { isDateModalOpen } = useSelector( state => state.ui);
     //console.log( isDateModalOpen );
@@ -17,7 +18,11 @@ export const FabDelete = () => {
         <button 
             className="btn btn__danger"
             onClick={ handleDelete }
-            style={{ display: ( hasEventSelected && !isDateModalOpen ) ? '' : 'none' }}
+            style={{ 
+                display: ( hasEventSelected && !isDateModalOpen ) ? '' : 'none',
+                opacity: (colorDisabled) ? '0.5' : '1'
+            }}
+            disabled={colorDisabled}
         >
             <i className="fas fa-trash-alt"></i>
 

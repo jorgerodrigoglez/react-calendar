@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect} from 'react';
 import { useDispatch } from 'react-redux';
-import { addHours, differenceInSeconds } from 'date-fns';
+import { addHours, differenceInSeconds, format } from 'date-fns';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -28,7 +28,7 @@ const customStyles = {
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root');
 
-export const CalendarModal = () => {
+export const CalendarModal = ({ formatText, colorDisabled }) => {
 
     // redux
     const dispatch = useDispatch();
@@ -98,12 +98,14 @@ export const CalendarModal = () => {
 
         if( formValues.title.length <= 0 ) return;
         //console.log({formValues});
+        // convertir las fechas para sql format
         await startSavingEvent( formValues );
         closeDateModal();
         setFormSubmitted(false);
     }
 
     return (
+   
         <Modal
             isOpen={ isDateModalOpen }
             onRequestClose={ onCloseModal }
@@ -111,11 +113,16 @@ export const CalendarModal = () => {
             className="modal"
             overlayClassName="modal-fondo"
             closeTimeoutMS={200}
-       
         >
-            <h1> Nuevo evento </h1>
+            <h2 
+                style={{ opacity: (colorDisabled) ? '.3' : '1'}}
+            > { formatText ? "Editar evento" : "Nuevo evento"} </h2>
             <hr />
-            <form className="container" onSubmit={ onSubmit }>
+            <form 
+                className="container" 
+                onSubmit={ onSubmit } 
+                style={{ opacity: (colorDisabled) ? '.5' : '1'}}
+            >
 
                 <div className="form-group mb-2">
                     <label>Fecha y hora inicio</label>
@@ -133,7 +140,7 @@ export const CalendarModal = () => {
 
                 <div className="form-group mb-2">
                     <label>Fecha y hora fin</label>
-                     {/*<input className="form-control" placeholder="Fecha inicio" />*/}
+                    {/*<input className="form-control" placeholder="Fecha inicio" />*/}
                     <DatePicker 
                         minDate={ formValues.start }
                         selected={ formValues.end }
@@ -180,10 +187,11 @@ export const CalendarModal = () => {
                     className="btn btn-outline-primary btn-block"
                 >
                     <i className="far fa-save"></i>
-                    <span> Guardar</span>
+                    <span>{ formatText ? " Editar..." : " Guardar..."}</span>
                 </button>
 
             </form>
         </Modal>
+        
     )
 }

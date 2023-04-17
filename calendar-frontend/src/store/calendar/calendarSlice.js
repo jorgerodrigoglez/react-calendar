@@ -1,27 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addHours } from 'date-fns';
+//import { addHours } from 'date-fns';
 
-const tempEvent = {
-    _id: new Date().getTime(),
-    title: 'Vacaciones de invierno',
-    notes: 'Hacer la reserva de hotel y comprar ropa',
+/*const tempEvent = {
+    //_id: new Date().getTime(),
+    title: '',
+    notes: '',
     start: new Date(),
     end: addHours( new Date(), 2 ),
-
     bgColor: '#fafafa',
-    user: {
-        _id: 'qwqee',
-        name: 'JRG'
-    }
-}
+    name: ''
+}*/
 
 export const calendarSlice = createSlice({
     name: 'calendar',
     initialState: {
       events: [
-        tempEvent
+        //tempEvent
       ],
-      activeEvent: null
+      activeEvent: null,
+      isLoadingEvents: true,
     },
     reducers: {
       onSetActiveEvent: (state, { payload } ) => {
@@ -33,7 +30,7 @@ export const calendarSlice = createSlice({
       },
       onUpdateEvent: ( state, { payload } ) => {
         state.events = state.events.map( event => {
-            if( event._id === payload._id ){
+            if( event.id === payload.id ){
                 return payload;
             }           
             return event;
@@ -44,17 +41,37 @@ export const calendarSlice = createSlice({
         // si hay un evento activo
         if( state.activeEvent ){
             // devuelve todos los eventos cuyo id sea diferente al de la nota activa
-            state.events = state.events.filter( event => event._id !== state.activeEvent._id );
+            state.events = state.events.filter( event => event.id !== state.activeEvent.id );
             state.activeEvent = null;
         }
       },
       // onCloseModal - Calendario Modal - 
       onClearEventActive: (state) => {
         state.activeEvent = null;
+      },
+      // se crea para listar los eventos que vienen del backend
+      onLoadEvents: ( state, { payload = [] }) => {
+        state.isLoadingEvents = false;
+        //state.events = payload;
+        payload.forEach( event => {
+          // devuelve true o false
+          const exits = state.events.some( eventDB => eventDB.id === event.id );
+          if(!exits){
+            state.events.push(event);
+          }
+          //state.events.push(event);
+        });
+      },
+      // limpiar el store al hacer logout
+      onClearLogout: (state) => {
+        state.isLoadingEvents = false;
+        state.events = [];
+        state.activeEvent = null;
       }
+    
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onClearEventActive } = calendarSlice.actions;
+export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onClearEventActive, onLoadEvents, onClearLogout } = calendarSlice.actions;
